@@ -37,7 +37,7 @@ export const MasteryMap = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-lg font-bold text-gray-800">Concept Mastery Map</h2>
-          <p className="text-sm text-gray-500">Mathematics - Grade 8</p>
+          <p className="text-sm text-gray-500">Biology - Grade 8</p>
         </div>
         <div className="flex gap-4 text-xs font-medium">
           <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success-500"></span> Mastered</div>
@@ -77,7 +77,7 @@ export const MasteryMap = () => {
           <div className="space-y-4">
             <div>
               <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">AI Diagnosis</h4>
-              <p className="text-sm text-gray-600 bg-red-50 text-red-800 p-3 rounded-lg border border-red-100">
+              <p className="text-sm text-gray-600 bg-slate-50 text-slate-800 p-3 rounded-lg border border-slate-100">
                 Struggles with relating fractions to percentages. Needs visual models before algorithmic practice.
               </p>
             </div>

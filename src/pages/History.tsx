@@ -42,14 +42,14 @@ export const History = () => {
                 { id: 't2', name: 'Weekly Biology', date: '1 month ago', score: '88%' },
                 { id: 't1', name: 'Mock Test 5', date: '2 months ago', score: '55%' },
               ].map((test) => (
-                <div key={test.id} className="group p-4 rounded-2xl border border-gray-100 hover:border-indigo-100 hover:bg-indigo-50/50 transition-colors cursor-pointer flex flex-col gap-2">
+                <div key={test.id} className="group p-4 rounded-2xl border border-gray-100 hover:border-blue-100 hover:bg-blue-50/50 transition-colors cursor-pointer flex flex-col gap-2">
                   <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-gray-900 text-sm group-hover:text-indigo-900 transition-colors leading-tight pr-4">{test.name}</h4>
+                    <h4 className="font-bold text-gray-900 text-sm group-hover:text-blue-900 transition-colors leading-tight pr-4">{test.name}</h4>
                     <span className="font-black text-gray-900 text-lg">{test.score}</span>
                   </div>
                   <div className="flex justify-between items-center mt-1">
                     <p className="text-xs text-gray-500">{test.date}</p>
-                    <Link to={`/analysis/${test.id}`} className="text-xs font-bold text-indigo-600 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Link to={`/analysis/${test.id}`} className="text-xs font-bold text-blue-600 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       View Report <ArrowRight size={12} />
                     </Link>
                   </div>

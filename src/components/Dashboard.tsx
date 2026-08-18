@@ -54,9 +54,9 @@ export const Dashboard = ({ onDemoLogout }: { onDemoLogout?: () => void }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               <SubjectCard 
-                subject="Mathematics" 
+                subject="Biology" 
                 masteryStatus="Needs Attention" 
-                icon="math" 
+                icon="biology" 
               />
               <SubjectCard 
                 subject="Science" 

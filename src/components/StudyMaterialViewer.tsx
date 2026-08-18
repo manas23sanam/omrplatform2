@@ -49,13 +49,13 @@ export const StudyMaterialViewer = ({ topicName, onClose, onComplete }: StudyMat
       type: "interactive",
       body: "To convert a fraction to a percentage, multiply by 100. Let's try it with 3/4.",
       interactive: (
-        <div className="bg-amber-50 p-6 md:p-8 rounded-2xl mt-6 border border-amber-100">
+        <div className="bg-slate-50 p-6 md:p-8 rounded-2xl mt-6 border border-slate-100">
           <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 text-xl md:text-2xl font-bold text-gray-800">
             <span className="bg-white px-4 py-2 rounded-xl shadow-sm">3 / 4</span>
-            <span className="text-amber-400">×</span>
+            <span className="text-slate-400">×</span>
             <span className="bg-white px-4 py-2 rounded-xl shadow-sm">100</span>
-            <span className="text-amber-400">=</span>
-            <span className="bg-amber-500 text-white px-4 md:px-6 py-2 rounded-xl shadow-md animate-pulse">75%</span>
+            <span className="text-slate-400">=</span>
+            <span className="bg-slate-500 text-white px-4 md:px-6 py-2 rounded-xl shadow-md animate-pulse">75%</span>
           </div>
         </div>
       )
@@ -126,7 +126,7 @@ export const StudyMaterialViewer = ({ topicName, onClose, onComplete }: StudyMat
           ) : (
             <button 
               onClick={onComplete}
-              className="flex items-center justify-center gap-2 bg-green-500 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-xl font-bold hover:bg-green-600 transition-colors shadow-md animate-in slide-in-from-bottom-2 flex-1 sm:flex-none text-sm sm:text-base"
+              className="flex items-center justify-center gap-2 bg-slate-500 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-xl font-bold hover:bg-slate-600 transition-colors shadow-md animate-in slide-in-from-bottom-2 flex-1 sm:flex-none text-sm sm:text-base"
             >
               <CheckCircle2 size={20} className="shrink-0" /> <span className="truncate">Finish & Mark Ready</span>
             </button>

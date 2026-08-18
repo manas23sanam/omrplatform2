@@ -19,8 +19,8 @@ export const Benchmarking = () => {
           </div>
         </div>
 
-        <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-r from-green-50 to-transparent border border-green-100">
-          <div className="p-2 rounded-lg bg-green-100 text-green-600 shrink-0 mt-1">
+        <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-r from-slate-50 to-transparent border border-slate-100">
+          <div className="p-2 rounded-lg bg-slate-100 text-slate-600 shrink-0 mt-1">
             <TrendingUp size={20} />
           </div>
           <div>
@@ -31,8 +31,8 @@ export const Benchmarking = () => {
           </div>
         </div>
 
-        <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-r from-purple-50 to-transparent border border-purple-100">
-          <div className="p-2 rounded-lg bg-purple-100 text-purple-600 shrink-0 mt-1">
+        <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-r from-blue-50 to-transparent border border-blue-100">
+          <div className="p-2 rounded-lg bg-blue-100 text-blue-600 shrink-0 mt-1">
             <Zap size={20} />
           </div>
           <div>

@@ -25,7 +25,7 @@ export const ActionQueue = () => {
       title: 'Pass Mastery Check: Decimals',
       time: '5 min',
       icon: <CheckSquare size={18} />,
-      color: 'bg-green-50 text-green-600',
+      color: 'bg-slate-50 text-slate-600',
     }
   ];
 

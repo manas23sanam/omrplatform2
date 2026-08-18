@@ -53,18 +53,18 @@ export const VerificationTest = ({ topicName, onClose, onPass, onFail }: Verific
         <div className="bg-white rounded-3xl p-10 max-w-md w-full flex flex-col items-center text-center shadow-2xl animate-in zoom-in-95 duration-300">
           {passed ? (
             <>
-              <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-green-500 mb-6">
+              <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 mb-6">
                 <CheckCircle2 size={48} />
               </div>
               <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Topic Mastered!</h2>
               <p className="text-gray-500 text-lg mb-8">You scored {score}/{questions.length}. Excellent work.</p>
-              <button onClick={onPass} className="w-full bg-green-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-600 transition-colors shadow-lg">
+              <button onClick={onPass} className="w-full bg-slate-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-slate-600 transition-colors shadow-lg">
                 Return to Dashboard
               </button>
             </>
           ) : (
             <>
-              <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-6">
+              <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 mb-6">
                 <AlertTriangle size={48} />
               </div>
               <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Needs More Work</h2>
@@ -118,11 +118,11 @@ export const VerificationTest = ({ topicName, onClose, onPass, onFail }: Verific
               
               if (isChecked) {
                 if (idx === q.answer) {
-                  btnClass = "border-green-500 bg-green-50 text-green-700 font-bold ring-2 ring-green-500/20";
-                  icon = <CheckCircle2 className="text-green-500" size={20} />;
+                  btnClass = "border-slate-500 bg-slate-50 text-slate-700 font-bold ring-2 ring-slate-500/20";
+                  icon = <CheckCircle2 className="text-slate-500" size={20} />;
                 } else if (selectedAnswer === idx) {
-                  btnClass = "border-red-500 bg-red-50 text-red-700 font-bold opacity-80";
-                  icon = <XCircle className="text-red-500" size={20} />;
+                  btnClass = "border-slate-500 bg-slate-50 text-slate-700 font-bold opacity-80";
+                  icon = <XCircle className="text-slate-500" size={20} />;
                 } else {
                   btnClass = "border-gray-200 bg-white text-gray-400 opacity-50";
                 }

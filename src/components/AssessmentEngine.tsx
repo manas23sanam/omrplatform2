@@ -124,7 +124,7 @@ export const AssessmentEngine = ({ onClose, onComplete }: AssessmentEngineProps)
                   <div 
                     key={idx} 
                     className={`flex items-center gap-4 transition-all duration-300 ${
-                      idx < analysisStep ? 'text-green-600' : idx === analysisStep ? 'text-primary-600 font-medium scale-105' : 'text-gray-300'
+                      idx < analysisStep ? 'text-slate-600' : idx === analysisStep ? 'text-primary-600 font-medium scale-105' : 'text-gray-300'
                     }`}
                   >
                     {idx < analysisStep ? <CheckCircle2 size={20} /> : idx === analysisStep ? <Loader2 size={20} className="animate-spin" /> : <div className="w-5 h-5 rounded-full border-2 border-gray-200" />}
@@ -137,7 +137,7 @@ export const AssessmentEngine = ({ onClose, onComplete }: AssessmentEngineProps)
 
           {state === 'complete' && (
             <div className="flex flex-col items-center justify-center py-20 animate-in fade-in zoom-in duration-500">
-              <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6 text-green-500">
+              <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 text-slate-500">
                 <CheckCircle2 size={48} />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Analysis Complete!</h2>

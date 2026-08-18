@@ -5,7 +5,7 @@ import { AssessmentEngine } from './AssessmentEngine';
 interface SubjectCardProps {
   subject: string;
   masteryStatus: string;
-  icon: 'math' | 'science' | 'english' | 'history' | 'geography';
+  icon: 'biology' | 'science' | 'english' | 'history' | 'geography';
 }
 
 export const SubjectCard = ({ subject, masteryStatus, icon }: SubjectCardProps) => {
@@ -14,21 +14,21 @@ export const SubjectCard = ({ subject, masteryStatus, icon }: SubjectCardProps) 
 
   const getIcon = () => {
     switch (icon) {
-      case 'math': return <Calculator size={24} className="text-blue-500" />;
-      case 'science': return <FlaskConical size={24} className="text-green-500" />;
-      case 'english': return <Book size={24} className="text-purple-500" />;
-      case 'history': return <Milestone size={24} className="text-amber-500" />;
-      case 'geography': return <Globe size={24} className="text-teal-500" />;
+      case 'biology': return <Calculator size={24} className="text-blue-500" />;
+      case 'science': return <FlaskConical size={24} className="text-slate-500" />;
+      case 'english': return <Book size={24} className="text-blue-500" />;
+      case 'history': return <Milestone size={24} className="text-slate-500" />;
+      case 'geography': return <Globe size={24} className="text-blue-500" />;
     }
   };
 
   const getBgColor = () => {
     switch (icon) {
-      case 'math': return 'bg-blue-50';
-      case 'science': return 'bg-green-50';
-      case 'english': return 'bg-purple-50';
-      case 'history': return 'bg-amber-50';
-      case 'geography': return 'bg-teal-50';
+      case 'biology': return 'bg-blue-50';
+      case 'science': return 'bg-slate-50';
+      case 'english': return 'bg-blue-50';
+      case 'history': return 'bg-slate-50';
+      case 'geography': return 'bg-blue-50';
     }
   };
 
@@ -73,9 +73,9 @@ export const SubjectCard = ({ subject, masteryStatus, icon }: SubjectCardProps) 
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Diagnostic Result</h4>
               
-              <div className="bg-white p-5 rounded-xl border border-red-200 shadow-sm flex flex-col gap-3 group cursor-pointer hover:border-red-400 transition-colors">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3 group cursor-pointer hover:border-slate-400 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-slate-500"></div>
                   <span className="font-bold text-gray-900 text-lg">{assessmentResult.root_cause.concept_node}</span>
                 </div>
                 
