@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   Clock,
   Zap,
   CheckCircle2,
   XCircle,
-  HelpCircle,
   BrainCircuit,
-  Sparkles,
   ArrowRight,
   RefreshCw,
   Trophy,
   BookOpen,
-  ChevronDown,
-  ChevronUp,
+  FileText,
+  Lightbulb,
 } from 'lucide-react';
 import { useLearningStore } from '../../context/LearningStoreContext';
 import { getPracticeTopicPack, type PracticeQuestion } from '../../data/practiceQuestions';
@@ -22,11 +20,16 @@ import { formatXp } from '../../lib/gamification';
 
 export const PracticeSession: React.FC = () => {
   const { topicId } = useParams<{ topicId?: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { completePracticeQuiz, currentUser } = useLearningStore();
 
+  const modeParam = searchParams.get('mode')?.toLowerCase();
+  const isTheoryMode = modeParam === 'theory';
+
   const topicPack = getPracticeTopicPack(topicId);
   const questions = topicPack.questions;
+  const theory = topicPack.theory;
 
   // Quiz state
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -38,15 +41,30 @@ export const PracticeSession: React.FC = () => {
   const [showHint, setShowHint] = useState(false);
   const [instantMode, setInstantMode] = useState(true);
 
+  // Switch mode helper
+  const handleModeChange = (mode: 'theory' | 'practice') => {
+    setSearchParams({ mode });
+  };
+
+  // Reset state when topicId changes
+  useEffect(() => {
+    setSelectedAnswers({});
+    setCheckedAnswers({});
+    setSecondsRemaining(topicPack.timeLimitSeconds);
+    setCurrentIdx(0);
+    setIsSubmitted(false);
+    setIsTimerRunning(true);
+    setShowHint(false);
+  }, [topicId, topicPack.timeLimitSeconds]);
+
   // Countdown timer effect
   useEffect(() => {
-    if (!isTimerRunning || isSubmitted) return;
+    if (!isTimerRunning || isSubmitted || isTheoryMode) return;
 
     const interval = setInterval(() => {
       setSecondsRemaining((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          handleSubmitQuiz();
           return 0;
         }
         return prev - 1;
@@ -54,7 +72,14 @@ export const PracticeSession: React.FC = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isTimerRunning, isSubmitted]);
+  }, [isTimerRunning, isSubmitted, isTheoryMode]);
+
+  // Handle timer expiry submit
+  useEffect(() => {
+    if (secondsRemaining === 0 && !isSubmitted && !isTheoryMode) {
+      handleSubmitQuiz();
+    }
+  }, [secondsRemaining, isSubmitted, isTheoryMode]);
 
   const currentQ: PracticeQuestion = questions[currentIdx] || questions[0];
   const selectedOptionIdx = selectedAnswers[currentIdx];
@@ -77,7 +102,7 @@ export const PracticeSession: React.FC = () => {
       correctCount++;
     }
   });
-  const totalQuestions = questions.length;
+  const totalQuestions = Math.max(1, questions.length);
   const scorePercentage = Math.round((correctCount / totalQuestions) * 100);
   const earnedXp = Math.round(topicPack.targetXp * (scorePercentage / 100)) + 30; // base reward + accuracy bonus
 
@@ -89,7 +114,7 @@ export const PracticeSession: React.FC = () => {
     questions.forEach((_, i) => (allChecked[i] = true));
     setCheckedAnswers(allChecked);
 
-    // Sync with global store (updates weak topic to mastered if >= 80, adds XP, re-ranks leaderboard)
+    // Sync with global store
     completePracticeQuiz(topicPack.topicId, scorePercentage, earnedXp);
   };
 
@@ -112,58 +137,179 @@ export const PracticeSession: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16 font-sans">
       {/* Top Navigation & Topic Briefing Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Link
-            to="/student/mock-tests"
-            className="p-2 rounded-2xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 transition-colors shadow-2xs"
-          >
-            <ArrowLeft size={18} />
-          </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <span
-                className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
-                  topicPack.subject === 'Physics'
-                    ? 'bg-blue-50 text-blue-700'
-                    : topicPack.subject === 'Chemistry'
-                    ? 'bg-slate-50 text-slate-700'
-                    : 'bg-slate-50 text-slate-700'
+      <div className="flex flex-col gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-2xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/student/mock-tests"
+              className="p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 transition-colors shadow-2xs"
+            >
+              <ArrowLeft size={18} />
+            </Link>
+            <div>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
+                    topicPack.subject === 'Physics'
+                      ? 'bg-blue-50 text-blue-700'
+                      : topicPack.subject === 'Chemistry'
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : 'bg-purple-50 text-purple-700'
+                  }`}
+                >
+                  {topicPack.subject}
+                </span>
+                <span className="text-xs font-bold text-slate-400">•</span>
+                <span className="text-xs font-bold text-slate-500">
+                  Targeted Concept Remediation Drill
+                </span>
+              </div>
+              <h2 className="text-xl md:text-2xl font-black text-slate-900 mt-0.5">
+                {topicPack.topicName}
+              </h2>
+            </div>
+          </div>
+
+          {/* XP Bounty & Timer Pill (Active during quiz mode) */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="bg-slate-50 border border-slate-200 px-3.5 py-1.5 rounded-2xl flex items-center gap-1.5 text-xs font-black text-slate-900 shadow-2xs">
+              <Zap size={14} className="fill-slate-500 text-slate-600" />
+              <span>+{topicPack.targetXp} XP Bounty</span>
+            </div>
+
+            {!isTheoryMode && (
+              <div
+                className={`px-3.5 py-1.5 rounded-2xl flex items-center gap-2 text-xs font-black border shadow-2xs ${
+                  secondsRemaining < 60
+                    ? 'bg-slate-50 text-slate-700 border-slate-200 animate-pulse'
+                    : 'bg-slate-900 text-white border-slate-800'
                 }`}
               >
-                {topicPack.subject} Drill
-              </span>
-              <span className="text-xs font-bold text-slate-400">•</span>
-              <span className="text-xs font-bold text-slate-500">5-Question Verification</span>
-            </div>
-            <h2 className="text-xl md:text-2xl font-black text-slate-900 mt-0.5">
-              {topicPack.topicName}
-            </h2>
+                <Clock size={14} className={secondsRemaining < 60 ? 'text-slate-500' : 'text-blue-400'} />
+                <span className="font-mono text-sm">{formatTimer(secondsRemaining)}</span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* XP Bounty & Timer Pill */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="bg-slate-50 border border-slate-200 px-3.5 py-1.5 rounded-2xl flex items-center gap-1.5 text-xs font-black text-slate-900 shadow-2xs">
-            <Zap size={14} className="fill-slate-500 text-slate-600" />
-            <span>+{topicPack.targetXp} XP Bounty</span>
-          </div>
-
-          <div
-            className={`px-3.5 py-1.5 rounded-2xl flex items-center gap-2 text-xs font-black border shadow-2xs ${
-              secondsRemaining < 60
-                ? 'bg-slate-50 text-slate-700 border-slate-200 animate-pulse'
-                : 'bg-slate-900 text-white border-slate-800'
+        {/* Mode Switcher Tabs */}
+        <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+          <button
+            type="button"
+            onClick={() => handleModeChange('theory')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              isTheoryMode
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
             }`}
           >
-            <Clock size={14} className={secondsRemaining < 60 ? 'text-slate-500' : 'text-blue-400'} />
-            <span className="font-mono text-sm">{formatTimer(secondsRemaining)}</span>
-          </div>
+            <BookOpen size={14} />
+            <span>Theory & Concepts</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleModeChange('practice')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              !isTheoryMode
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+            }`}
+          >
+            <FileText size={14} />
+            <span>Interactive Practice Quiz (5 MCQs)</span>
+          </button>
         </div>
       </div>
 
-      {!isSubmitted ? (
-        /* ACTIVE QUIZ SESSION VIEW */
+      {/* ========================================================================= */}
+      {/* 1. THEORY READING MODE VIEW                                               */}
+      {/* ========================================================================= */}
+      {isTheoryMode ? (
+        <div className="space-y-6 animate-in fade-in duration-300">
+          {/* Main Theory Article Card */}
+          <div className="bg-white rounded-3xl p-6 md:p-10 border border-slate-100 shadow-2xs space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <BookOpen size={20} className="text-blue-600" />
+                <div>
+                  <span className="text-[10px] font-black uppercase text-blue-700 tracking-wider">
+                    Core Study Guide
+                  </span>
+                  <h3 className="text-xl font-black text-slate-900">
+                    {theory.title}
+                  </h3>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-slate-400">
+                5-Min Focused Read
+              </span>
+            </div>
+
+            {/* Theory Overview Summary Callout */}
+            <div className="p-4 bg-blue-50/60 rounded-2xl border border-blue-100/80 text-xs md:text-sm text-blue-950 font-medium leading-relaxed">
+              <span className="font-bold">Summary: </span>
+              {theory.summary}
+            </div>
+
+            {/* In-depth Theory Paragraphs */}
+            <div className="space-y-4 pt-2">
+              <h4 className="text-sm font-black uppercase tracking-wider text-slate-400">
+                Detailed Conceptual Derivation & Principles
+              </h4>
+              {theory.paragraphs.map((para, pIdx) => (
+                <p
+                  key={pIdx}
+                  className="text-slate-700 leading-relaxed text-sm md:text-base font-normal"
+                >
+                  {para}
+                </p>
+              ))}
+            </div>
+
+            {/* High-Yield Key Takeaways Checklist */}
+            {theory.keyTakeaways && theory.keyTakeaways.length > 0 && (
+              <div className="space-y-3 pt-2">
+                <h4 className="text-sm font-black uppercase tracking-wider text-slate-400">
+                  Key Takeaways & High-Yield Exam Points
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {theory.keyTakeaways.map((takeaway, tIdx) => (
+                    <div
+                      key={tIdx}
+                      className="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200/80 flex items-start gap-2.5 text-xs text-slate-800 leading-relaxed"
+                    >
+                      <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+                      <span>{takeaway}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Action Card: Switch to Interactive Practice Quiz */}
+            <div className="p-6 bg-gradient-to-r from-blue-900 to-slate-900 rounded-2xl text-white flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+              <div className="space-y-1 text-center sm:text-left">
+                <h4 className="font-black text-base">Ready to test your concept mastery?</h4>
+                <p className="text-xs text-blue-200">
+                  Verify your understanding with 5 targeted multiple choice questions.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleModeChange('practice')}
+                className="px-6 py-3 rounded-xl bg-white text-slate-950 hover:bg-blue-50 font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer hover:scale-105 shrink-0"
+              >
+                <span>Launch Interactive Practice Quiz</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : !isSubmitted ? (
+        /* ======================================================================= */
+        /* 2. ACTIVE INTERACTIVE 5-QUESTION MCQ QUIZ VIEW                         */
+        /* ======================================================================= */
         <div className="space-y-6">
           {/* Progress Bar & Question Stepper */}
           <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-2xs space-y-4">
@@ -236,7 +382,7 @@ export const PracticeSession: React.FC = () => {
           <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 shadow-2xs space-y-6">
             <div className="space-y-3">
               <span className="text-[10px] font-black uppercase text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">
-                Question {currentIdx + 1}
+                Multiple Choice Question • Q{currentIdx + 1}
               </span>
               <h3 className="text-base md:text-lg font-extrabold text-slate-900 leading-relaxed">
                 {currentQ.questionText}
@@ -283,7 +429,7 @@ export const PracticeSession: React.FC = () => {
                           : 'bg-slate-100 text-slate-600'
                       }`}
                     >
-                      {optionLetter}
+                      <span>{optionLetter}.</span>
                     </div>
 
                     <span className="text-xs md:text-sm pt-0.5 leading-relaxed flex-1">
@@ -373,7 +519,7 @@ export const PracticeSession: React.FC = () => {
               </button>
 
               <div className="flex items-center gap-3">
-                {currentIdx < totalQuestions - 1 ? (
+                {currentIdx < totalQuestions - 1 && (
                   <button
                     type="button"
                     onClick={() => {
@@ -385,22 +531,24 @@ export const PracticeSession: React.FC = () => {
                     <span>Next Question</span>
                     <ArrowRight size={14} />
                   </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleSubmitQuiz}
-                    className="px-8 py-3 rounded-2xl bg-gradient-to-r from-slate-600 to-blue-600 hover:from-slate-700 hover:to-blue-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer hover:scale-105"
-                  >
-                    <Trophy size={16} />
-                    <span>Submit & Grade Quiz</span>
-                  </button>
                 )}
+
+                <button
+                  type="button"
+                  onClick={handleSubmitQuiz}
+                  className="px-8 py-3 rounded-2xl bg-gradient-to-r from-slate-800 to-blue-600 hover:from-slate-900 hover:to-blue-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer hover:scale-105"
+                >
+                  <Trophy size={16} />
+                  <span>Submit & Grade Drill</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        /* QUIZ RESULTS & CELEBRATION SUMMARY VIEW */
+        /* ======================================================================= */
+        /* 3. QUIZ RESULTS & CELEBRATION SUMMARY VIEW                             */
+        /* ======================================================================= */
         <div className="space-y-8 animate-in zoom-in-95 duration-400">
           {/* Headline Results Hero Card */}
           <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 rounded-3xl p-8 md:p-10 text-white shadow-2xl text-center relative overflow-hidden">
@@ -411,22 +559,22 @@ export const PracticeSession: React.FC = () => {
 
               <div>
                 <span className="text-[11px] font-black uppercase tracking-wider text-slate-300 bg-white/10 px-3 py-1 rounded-full border border-white/10">
-                  {scorePercentage >= 80 ? 'Mastery Milestone Achieved!' : 'Practice Complete!'}
+                  {scorePercentage >= 80 ? 'Mastery Milestone Achieved!' : 'Drill Completed!'}
                 </span>
                 <h3 className="text-3xl md:text-4xl font-black mt-2">
-                  {scorePercentage}% Score ({correctCount}/{totalQuestions} Correct)
+                  Accuracy Score: {scorePercentage}% ({correctCount}/{totalQuestions} correct)
                 </h3>
               </div>
 
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-slate-400 to-slate-400 text-slate-950 px-6 py-2.5 rounded-2xl font-black text-sm shadow-md">
                 <Zap size={18} className="fill-slate-950" />
-                <span>+{formatXp(earnedXp)} XP Awarded & Synced to Cohort Leaderboard</span>
+                <span>+{formatXp(earnedXp)} XP Reward Claimed & Awarded</span>
               </div>
 
               <p className="text-xs md:text-sm text-blue-100 leading-relaxed pt-2">
                 {scorePercentage >= 80
-                  ? `Outstanding! You demonstrated clear mastery of ${topicPack.topicName}. This topic has been marked as Mastered on your study checklist.`
-                  : `Good effort! You scored ${scorePercentage}%. Review the step-by-step solutions below and retake to achieve Mastered status.`}
+                  ? `Outstanding! You demonstrated clear mastery of ${topicPack.topicName} with ${correctCount} of ${totalQuestions} questions answered correctly. This topic has been marked as Mastered.`
+                  : `Good effort! You scored ${scorePercentage}% overall. Review the step-by-step solutions below and retake to achieve Mastered status.`}
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -506,7 +654,7 @@ export const PracticeSession: React.FC = () => {
                             }`}
                           >
                             <span className="w-5 h-5 rounded-md bg-white text-slate-800 flex items-center justify-center font-black text-[10px]">
-                              {['A', 'B', 'C', 'D'][oIdx]}
+                              {['A.', 'B.', 'C.', 'D.'][oIdx]}
                             </span>
                             <span className="line-clamp-1">{opt}</span>
                           </div>
@@ -534,3 +682,4 @@ export const PracticeSession: React.FC = () => {
     </div>
   );
 };
+

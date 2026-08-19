@@ -140,6 +140,20 @@ export const OMRScanVisualizer: React.FC<OMRScanVisualizerProps> = ({
         if (apiKey) {
           addLog('Analyzing optical marks and evaluating answers...', 'info');
           geminiResult = await evaluateOMRSheet(base64Image, section, apiKey);
+          // Force correct math because LLMs are bad at math
+          if (geminiResult && geminiResult.answers) {
+            let correctCount = 0;
+            let incorrectCount = 0;
+            geminiResult.answers.forEach(ans => {
+              if (ans.selectedOption) {
+                if (ans.isCorrect) correctCount++;
+                else incorrectCount++;
+              }
+            });
+            geminiResult.score = (correctCount * 4) - (incorrectCount * 1);
+            geminiResult.maxScore = 180; // 45 questions * 4
+            geminiResult.accuracy = Math.round((geminiResult.score / geminiResult.maxScore) * 100) || 0;
+          }
         } else {
           // Fallback mock if no API key or using mock SVG
           addLog('Mock evaluation generated...', 'info');

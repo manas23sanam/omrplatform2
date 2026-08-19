@@ -32,7 +32,7 @@ Please perform the following tasks:
 1. Extract the student's Roll Number (if visible). If not visible, return "UNKNOWN".
 2. Identify all answered questions on the sheet. For each question, determine which bubble is filled. (Note: if bubbles are numbered 1, 2, 3, 4, map them to A, B, C, D respectively).
 3. Evaluate the answers based on a hypothetical answer key (assume the correct answer for every question is 'A' for demonstration purposes).
-4. Calculate the score: +4 for every correct answer, -1 for every incorrect answer, 0 for unattempted.
+4. Calculate the score: +4 for every correct answer, -1 for every incorrect answer, 0 for unattempted. (Note: There are exactly 45 questions. The max score is 180).
 
 Return ONLY a valid JSON object with the following structure, and no markdown formatting (do not wrap in \`\`\`json):
 {
@@ -98,6 +98,7 @@ Return ONLY a valid JSON object with the following structure, and no markdown fo
     throw new Error('Failed to parse Gemini JSON output: ' + textResponse);
   }
 };
+
 
 
 

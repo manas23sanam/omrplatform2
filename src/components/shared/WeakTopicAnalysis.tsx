@@ -18,7 +18,7 @@ export interface TopicAnalysisItem {
 interface WeakTopicAnalysisProps {
   topics: TopicAnalysisItem[];
   viewType: 'student' | 'teacher';
-  onActionClick: (topicId: string) => void;
+  onActionClick: (topicId: string, actionType?: 'theory' | 'practice' | 'drill') => void;
 }
 
 const getPriorityColor = (priority: 'High' | 'Medium' | 'Low') => {
@@ -72,21 +72,21 @@ export const WeakTopicAnalysis: React.FC<WeakTopicAnalysisProps> = ({
                 <>
                   <button
                     type="button"
-                    onClick={() => onActionClick(topic.id)}
+                    onClick={() => onActionClick(topic.id, 'theory')}
                     className="px-4 py-2 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
                   >
                     Read Theory & Mistakes
                   </button>
                   <button
                     type="button"
-                    onClick={() => onActionClick(topic.id)}
+                    onClick={() => onActionClick(topic.id, 'practice')}
                     className="px-4 py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
                   >
                     Start Practice
                   </button>
                   <button
                     type="button"
-                    onClick={() => onActionClick(topic.id)}
+                    onClick={() => onActionClick(topic.id, 'drill')}
                     className="px-4 py-2 rounded-xl font-bold text-xs bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-xs"
                   >
                     Start Assigned Drill
@@ -95,7 +95,7 @@ export const WeakTopicAnalysis: React.FC<WeakTopicAnalysisProps> = ({
               ) : (
                 <button
                   type="button"
-                  onClick={() => onActionClick(topic.id)}
+                  onClick={() => onActionClick(topic.id, 'theory')}
                   className="w-full md:w-auto px-5 py-2.5 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-colors shadow-xs"
                 >
                   Assign Practice
@@ -113,3 +113,4 @@ export const WeakTopicAnalysis: React.FC<WeakTopicAnalysisProps> = ({
     </div>
   );
 };
+

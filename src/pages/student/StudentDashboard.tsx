@@ -5,6 +5,7 @@ import { useLearningStore } from '../../context/LearningStoreContext';
 import { DEMO_STUDENT } from '../../config/branding';
 
 import { MOCK_STUDENTS } from '../../data/mockData';
+import { useNavigate } from 'react-router-dom';
 import { WeakTopicAnalysis } from '../../components/shared/WeakTopicAnalysis';
 import type { TopicAnalysisItem } from '../../components/shared/WeakTopicAnalysis';
 
@@ -52,6 +53,7 @@ const MOCK_WEAK_TOPICS: TopicAnalysisItem[] = [
 
 
 export const StudentDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const { currentUser, testPapers, students } = useLearningStore();
 
   const activeStudent =
@@ -99,7 +101,7 @@ export const StudentDashboard: React.FC = () => {
         ].map((stat, i) => (
           <div
             key={i}
-            className="bg-slate-50 rounded-2xl p-5 flex flex-col items-start transition-transform hover:-translate-y-0.5"
+            className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 flex flex-col items-start transition-transform hover:-translate-y-0.5 hover:shadow-md"
           >
             <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
               {stat.label}
@@ -112,7 +114,7 @@ export const StudentDashboard: React.FC = () => {
       <WeakTopicAnalysis
         topics={MOCK_WEAK_TOPICS}
         viewType="student"
-        onActionClick={(topicId) => console.log('Action on topic:', topicId)}
+        onActionClick={(topicId, actionType) => navigate(`/student/practice/${topicId}?mode=${actionType}`)}
       />
 
       {/* Full Width Sections: Recent Test Reports */}
@@ -169,4 +171,8 @@ export const StudentDashboard: React.FC = () => {
     </div>
   );
 };
+
+
+
+
 
